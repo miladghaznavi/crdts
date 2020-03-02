@@ -9,9 +9,9 @@ include_directories(${GTEST_INCLUDE})
 
 set(TEST_SOURCE_FILES
         sb/timestamp.hh
-        test/timestamp_unittest.cc
         sb/lwwregister.hh
         sb/lwwregister.cc
+        test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
 )
 
