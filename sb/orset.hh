@@ -6,22 +6,32 @@
 #include <string>
 #include "timestamp.hh"
 
-class OrSet {
+class ORSet {
 private:
-    std::unordered_map<std::string, std::unordered_set<Timestamp>> _observe;
-    std::unordered_map<std::string, std::unordered_set<Timestamp>> _remove;
-    Timestamp _unique_tag;
+    std::unordered_map<std::string, std::unordered_map<uint64_t, Timestamp>> _observe;
+    std::unordered_map<uint64_t, Timestamp> _versions;
+    uint64_t _replica_id;
 
 public:
-    explicit OrSet(uint64_t replica_id);
+    explicit ORSet(uint64_t replica_id);
 
     void add(std::string& e);
 
+    void add(std::string&& e);
+
     void remove(std::string& e);
 
-    bool lookup(std::string& e);
+    void remove(std::string&& e);
 
-    void merge(OrSet& other);
+    bool contains(std::string& e);
+
+    bool contains(std::string&& e);
+
+    void merge(ORSet& other);
+
+    std::unordered_set<std::string> elements();
+
+    uint64_t replica_id();
 };
 
 #endif //CRDTS_ORSET_HH

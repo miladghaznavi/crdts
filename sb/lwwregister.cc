@@ -2,8 +2,9 @@
 
 /// Constructs a LWWRegister
 /// \param replica_id the replica
-LWWRegister::LWWRegister(uint64_t replica_id) :
-    _timestamp(replica_id) { }
+LWWRegister::LWWRegister(uint64_t replica_id) {
+    _timestamp.replica_id(replica_id);
+}
 
 /// Queries the value of the register
 /// \return the latest value

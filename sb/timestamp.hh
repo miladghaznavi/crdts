@@ -4,13 +4,13 @@
 struct Timestamp {
 private:
     uint64_t _seq_number{}; // A monotonically increasing sequence number.
-    uint64_t _uid; // An identifier that is unique across all replicas.
-    uint64_t _replica_id; // TODO: remove replica_id and use an external call for the replica id.
+    uint64_t _uid{}; // An identifier that is unique across all replicas.
+    uint64_t _replica_id{}; // TODO: remove replica_id and use an external call for the replica id.
 
 public:
     /// Creates a new timestamp
     /// \param replica_id the replica's unique identifier
-    explicit Timestamp(uint64_t replica_id) {
+    void replica_id(uint64_t replica_id) {
         this->_replica_id = replica_id;
         this->_uid = replica_id;
     }

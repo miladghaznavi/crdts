@@ -15,6 +15,7 @@ set(TEST_SOURCE_FILES
         sb/orset.cc
         test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
+        test/orset_uinttest.cc
 )
 
 find_library(GTEST_LIB NAMES libgtest.a PATHS /usr/local/lib)

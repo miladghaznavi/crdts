@@ -57,10 +57,10 @@ An observed-removed set (ORSet) is a variant of set, that is, a collection of un
 A set exposes the following operations:
 - `add` that add an element to to the local object,
 - `remove` that removes an element from the local object,
-- `lookup` that queries the existence of a given element in the local object, and
+- `contains` that queries the existence of a given element in the local object, and
 - `merge` that merges a ORSet received at a downstream replica with the local object.
 
-`add` and `remove` are idempotent and commutative, and `lookup` does not mutate an object.
+`add` and `remove` are idempotent and commutative, and `contains` does not mutate an object.
 However, concurrent `add` and `remove` on the same element do not commute. To enforce convergence, 
 we use an *add-wins* policy where an `add` on an element `e` wins over concurrent `remove` operations
 on `e`.
