@@ -7,7 +7,7 @@ It contains two directories.
 and `test` contains test suites to test the implementation.
 
 ## State-based CRDTs
-We implement a __last-writer-wins register__, __observed-removed set__, and a __add-wins-observed-removed-map__.
+We implement a __last-writer-wins register__, __optimized-observed-removed set__, and a __add-wins-observed-removed-map__.
 
 ### Last-writer-wins Register (LWWRegister)
 A LWWRegister object is a variant of a register, i.e., a memory cell that stores a value.
@@ -52,8 +52,10 @@ timestamp still captures the casual dependency because the updated timestamp is 
 than the timestamp of `merge` (recall that a timestamp "happens before" another one if its 
 sequence number is smaller).
 
-### Observed-removed set (ORSet)
-An observed-removed set (ORSet) is a variant of set, that is, a collection of unique elements.
+### Optimized Observed Removed set (OptORSet)
+An optimized observed removed set (OptORSet) is a variant of set, that is, a collection of unique elements.
+We use [[1]](#1).
+
 A set exposes the following operations:
 - `add` that add an element to to the local object,
 - `remove` that removes an element from the local object,
@@ -65,7 +67,13 @@ However, concurrent `add` and `remove` on the same element do not commute. To en
 we use an *add-wins* policy where an `add` on an element `e` wins over concurrent `remove` operations
 on `e`.
 
-`merge` takes an ORSet object and 
+`merge` takes an ORSet object and performs the following for each element `e`.
 
 ### Map
 
+
+# References
+<a id="1">[1]</a> 
+Bieniusa A, Zawirski M, Preguiça N, Shapiro M, Baquero C, Balegas V, Duarte S. (2012). 
+An optimized conflict-free replicated set
+arXiv preprint arXiv:1210.3368.
