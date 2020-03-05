@@ -4,6 +4,7 @@
 #include <string>
 #include "timestamp.hh"
 
+/// A LWWRegister is a variant of a register, i.e., a memory cell that stores a value.
 class LWWRegister {
 private:
     Timestamp _timestamp;

@@ -11,6 +11,8 @@ set(TEST_SOURCE_FILES
         sb/timestamp.hh
         sb/lwwregister.hh
         sb/lwwregister.cc
+        sb/orset.hh
+        sb/orset.cc
         test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
 )

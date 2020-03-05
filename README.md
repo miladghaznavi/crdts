@@ -7,7 +7,7 @@ It contains two directories.
 and `test` contains test suites to test the implementation.
 
 ## State-based CRDTs
-We implement a __last-writer-wins register__ and a __map__.
+We implement a __last-writer-wins register__, __observed-removed set__, and a __add-wins-observed-removed-map__.
 
 ### Last-writer-wins Register (LWWRegister)
 A LWWRegister object is a variant of a register, i.e., a memory cell that stores a value.
@@ -27,16 +27,14 @@ operation with a larger timestamp wins the race with another `assign` operation.
 property of a timestamp is particularly important because it prevents any tie
 between timestamps.
 
-
 We implement a timestamp using a monotonically increasing sequence number concatenated with
 a unique identifier (uid); the comparison of sequence numbers precedes that of uids in comparing
 two timestamps. Both the sequence number and uid are a 64 bit unsigned integer.
 
-A timestamp constructor takes a 64 bit integer to initialize its uid allowing
-us to externally ensure its uniqueness.
-Each call to `assign` increments the sequence number to order local `assign` operations.
-The current implementation does not handle the integer overflow when increments exhaust 64 bit
-space of the sequence number. 
+A timestamp constructor takes a 64 bit integer to initialize its uid allowing us to externally
+ensure its uniqueness. Each call to `assign` increments the sequence number to order local `assign`
+operations. We handle the integer overflow when the 32 bit space sequence number is exhausted by
+the assumption that zero is larger than the maximum value, similar to TCP. 
 
 We can use the identifier of a replica as a uid. A replica's identifier is unique among all 
 replicas enabling us to break the ties when replicas associate the same sequence number to
@@ -44,7 +42,7 @@ their `assign` operations.
 
 `merge` is expected to be called at a downstream replica upon receiving a LWWRegister from 
 another replica. `merge` takes a LWWRegister object `r` and if the timestamp of `r` is greater
-than the local timestamp,  it replaces its local value and timestamp with the value and
+than the local timestamp, it replaces its local value and timestamp with the value and
 timestamp of `r`.
 
 An `assign` operation proceeding a `merge` must be still able to use the local replica's 
@@ -53,6 +51,21 @@ the identifier of its local replica in addition to incrementing its sequence num
 timestamp still captures the casual dependency because the updated timestamp is still larger 
 than the timestamp of `merge` (recall that a timestamp "happens before" another one if its 
 sequence number is smaller).
+
+### Observed-removed set (ORSet)
+An observed-removed set (ORSet) is a variant of set, that is, a collection of unique elements.
+A set exposes the following operations:
+- `add` that add an element to to the local object,
+- `remove` that removes an element from the local object,
+- `lookup` that queries the existence of a given element in the local object, and
+- `merge` that merges a ORSet received at a downstream replica with the local object.
+
+`add` and `remove` are idempotent and commutative, and `lookup` does not mutate an object.
+However, concurrent `add` and `remove` on the same element do not commute. To enforce convergence, 
+we use an *add-wins* policy where an `add` on an element `e` wins over concurrent `remove` operations
+on `e`.
+
+`merge` takes an ORSet object and 
 
 ### Map
 
