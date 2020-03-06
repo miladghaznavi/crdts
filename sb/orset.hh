@@ -27,7 +27,7 @@ public:
 
     bool contains(std::string&& e);
 
-    void merge(ORSet& other);
+    void merge(ORSet& src);
 
     std::unordered_set<std::string> elements();
 
