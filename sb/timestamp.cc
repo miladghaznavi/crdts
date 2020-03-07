@@ -19,11 +19,6 @@ bool operator != (const Timestamp& t1, const Timestamp& t2) {
     return !(t1 == t2);
 }
 
-std::ostream& operator << (std::ostream &out, const Timestamp& t) {
-    out << t._seq_number << t._uid;
-    return out;
-}
-
 void Timestamp::update() {
     _seq_number ++;
     // TODO: replace replica_id with an external call that returns the replica's identifier.
