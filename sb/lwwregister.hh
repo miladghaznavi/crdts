@@ -11,9 +11,12 @@ private:
     std::string _value;
 
 public:
-    /// Constructs a LWWRegister
-    /// \param replica_id the replica
-    explicit LWWRegister(uint64_t replica_id);
+    /// Initialize the unique tag of the register with a given replica id.
+    /// This function is for test purposes and must be called right after constructing a register.
+    /// An internal call can replace this function, where the internal call uses the mac address of an network
+    /// interface as the unique identifier of the register unique tag
+    /// \param replica_id the given replica id
+    void init_unique_tag(uint64_t replica_id);
 
     /// Queries the value of the register
     /// \return the latest value
@@ -29,11 +32,7 @@ public:
 
     /// Gets the replica id
     /// \return the replica's id
-    uint64_t replica_id();
-
-    /// Gets if the register has been initialized
-    /// \return true if the register is initialized, otherwise false
-    bool initialized() const;
+    uint64_t replica_id() const;
 };
 
 #endif //CRDTS_LWWREGISTER_HH
