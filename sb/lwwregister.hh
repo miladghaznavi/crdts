@@ -17,7 +17,7 @@ public:
 
     /// Queries the value of the register
     /// \return the latest value
-    std::string value();
+    std::string value() const;
 
     /// Assigns a given value to the register
     /// \param value the given value
@@ -33,7 +33,7 @@ public:
 
     /// Gets if the register has been initialized
     /// \return true if the register is initialized, otherwise false
-    bool initialized();
+    bool initialized() const;
 };
 
 #endif //CRDTS_LWWREGISTER_HH

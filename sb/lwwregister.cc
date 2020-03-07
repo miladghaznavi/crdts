@@ -4,7 +4,7 @@ LWWRegister::LWWRegister(uint64_t replica_id) {
     _timestamp.replica_id(replica_id);
 }
 
-std::string LWWRegister::value() {
+std::string LWWRegister::value() const {
     if (!initialized()) {
         throw "Querying an uninitialized register";
     }//if
@@ -13,8 +13,8 @@ std::string LWWRegister::value() {
 }
 
 void LWWRegister::assign(const std::string& value) {
-    this->_value = value;
     this->_timestamp.update();
+    this->_value = value;
 }
 
 void LWWRegister::merge(const LWWRegister &reg) {
@@ -28,7 +28,7 @@ uint64_t LWWRegister::replica_id() {
     return this->_timestamp.replica_id();
 }
 
-bool LWWRegister::initialized() {
+bool LWWRegister::initialized() const {
     return !this->_timestamp.beginning_of_time();
 }
 
