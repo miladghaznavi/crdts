@@ -6,6 +6,9 @@
 #include <string>
 #include "timestamp.hh"
 
+/// ORSet implements an "observed remove set" based on "optimized observed removed set" [1].
+/// [1] Bieniusa A, Zawirski M, Preguiça N, Shapiro M, Baquero C, Balegas V, Duarte S. (2012).
+/// An optimized conflict-free replicated set, arXiv preprint arXiv:1210.3368.
 class ORSet {
 private:
     std::unordered_map<std::string, std::unordered_map<uint64_t, Timestamp>> _elements;
