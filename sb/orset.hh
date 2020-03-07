@@ -50,7 +50,7 @@ public:
 
     /// Retrieves elements stored in the local replica
     /// \return the set of elements
-    std::unordered_set<std::string> elements();
+    std::unordered_set<std::string> elements() const;
 
     /// Retrieves the local replica id
     /// \return the local replica id

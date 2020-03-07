@@ -14,6 +14,8 @@ set(TEST_SOURCE_FILES
         sb/lwwregister.cc
         sb/orset.hh
         sb/orset.cc
+        sb/map.hh
+        sb/map.cc
         test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
         test/orset_uinttest.cc

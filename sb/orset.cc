@@ -136,7 +136,7 @@ void ORSet::merge(const ORSet &remote_set) {
     _merge_versions(remote_set);
 }
 
-std::unordered_set<std::string> ORSet::elements() {
+std::unordered_set<std::string> ORSet::elements() const {
     std::unordered_set<std::string> result;
 
     for (const auto& elem: _elements)
