@@ -1,12 +1,10 @@
 #include "map.hh"
 
-
-Map::Map(uint64_t replica_id) : _keys(replica_id) {
-
-}
+Map::Map(uint64_t replica_id) : _keys(replica_id) { }
 
 void Map::put(const std::string &key, const std::string &val) {
     _keys.add(key);
+    _registers[key].init_unique_tag(_keys.replica_id());
     _registers[key].assign(val);
 }
 
@@ -44,15 +42,23 @@ void Map::merge(const Map &map) {
         }//if
         else if (this->_keys.contains(remote_reg.first)) {
             // TODO: Find a more intuitive implementation because reasoning about the correctness of the
-            //  current implementation is complicated. The current implementation is correct because
-            //  the local register will have the same value as the remote register, although the local
-            //  register may win in merge. Since registers do not expose their unique tags (timestamps),
-            //  the local and remote values are consistent to outside world. Future merges will be still
-            //  valid.
-            // The register associate to the remote key does not exist locally, add the associated register
+            //  current implementation is complicated. The current implementation is correct because the
+            //  local register will have the same value as the remote register, although the local register
+            //  may win in merge. Since registers do not expose their unique tags (timestamps), the local
+            //  and remote values are consistent to the outside world. Future merges will be still valid.
+            // The register associate to the remote key does not exist locally, add the associated register.
             // We initialize the local register with the remote value, then merge two registers.
+            this->_registers[remote_reg.first].init_unique_tag(this->_keys.replica_id());
             this->_registers[remote_reg.first].assign(remote_reg.second.value());
             this->_registers[remote_reg.first].merge(remote_reg.second);
         }//else if
     }//for
+}
+
+bool Map::contains(const std::string& key) {
+    return _keys.contains(key);
+}
+
+size_t Map::size() {
+    return _keys.size();
 }
