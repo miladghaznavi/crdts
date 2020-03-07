@@ -37,7 +37,7 @@ public:
 
     /// Checks if the current timestamp is at the beginning of time
     /// \return true if at beginning of time, otherwise false.
-    bool beginning_of_time();
+    bool beginning_of_time() const;
 
     /// Gets the value of replica
     /// \return

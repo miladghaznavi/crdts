@@ -26,7 +26,7 @@ void Timestamp::update() {
     _uid = _replica_id;
 }
 
-bool Timestamp::beginning_of_time() {
+bool Timestamp::beginning_of_time() const {
     return _seq_number == 0;
 }
 
