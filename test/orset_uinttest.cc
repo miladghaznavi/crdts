@@ -8,32 +8,25 @@ namespace {
         EXPECT_EQ(REPLICA_ID, set.replica_id());
     }//TEST
 
-    TEST(ORSet, AddAndRemoveSingleReplica) {
+    TEST(ORSet, AddAndRemoveContainSingleReplica) {
         ORSet set(REPLICA_ID);
+        std::unordered_set<std::string> ref;
 
         for (int i = 0; i < 10; ++i) {
-            std::string b = "B" + std::to_string(i);
+            std::string b = std::to_string(random());
             set.add(b);
+            ref.insert(b);
         }//for
 
-        for (int i = 0; i < 10; ++i) {
-            std::string b = "C" + std::to_string(i);
-            set.add(b);
+        // Check the existence of added elements
+        for (auto e: ref) {
+            EXPECT_TRUE(set.contains(e));
         }//for
 
-        std::string b = "B0";
-        std::string c = "C2";
-        EXPECT_TRUE(set.contains(b));
-        EXPECT_TRUE(set.contains(c));
-
-        for (int i = 0; i < 5; ++i) {
-            auto b_or_c = random() % 2;
-            auto ind = random() % 10;
-            std::string bc =  (b_or_c) ? "B" : "C";
-            bc += std::to_string(ind);
-
-            set.remove(bc);
-            EXPECT_FALSE(set.contains(bc));
+        // Check the existence of removed elements
+        for (auto e: ref) {
+            set.remove(e);
+            EXPECT_FALSE(set.contains(e));
         }//for
     }//TEST
 
@@ -65,29 +58,6 @@ namespace {
         for (int i = 0; i < elems.size(); i++) {
             EXPECT_TRUE(ref.count(*elems.begin()));
             elems.erase(elems.begin());
-        }//for
-    }//TEST
-
-    TEST(ORSet, Contains) {
-        ORSet set(REPLICA_ID);
-
-        for (int i = 0; i < 10; ++i) {
-            std::string b = "B" + std::to_string(i);
-            set.add(b);
-        }//for
-
-        EXPECT_EQ(10, set.size());
-        for (int i = 0; i < set.size(); i++) {
-            std::string b = "B" + std::to_string(i);
-            EXPECT_TRUE(set.contains(b));
-        }//for
-
-        auto to_remove = random() % set.size() + 1;
-        for (int i = 0; i < to_remove; ++i) {
-            auto ind = random() % 10;
-            std::string b = "B" + std::to_string(ind);
-            set.remove(b);
-            EXPECT_FALSE(set.contains(b));
         }//for
     }//TEST
 

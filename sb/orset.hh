@@ -48,15 +48,15 @@ public:
     /// \param remote_set the given remote set
     void merge(const ORSet& remote_set);
 
-    /// Retrieves elements stored in the local replica
+    /// Gets elements stored in the local replica
     /// \return the set of elements
     std::unordered_set<std::string> elements() const;
 
-    /// Retrieves the local replica id
+    /// Gets the local replica id
     /// \return the local replica id
     uint64_t replica_id();
 
-    /// Retrieves the number of elements in the set
+    /// Gets the number of elements in the set
     /// \return the number of elements
     size_t size();
 };
