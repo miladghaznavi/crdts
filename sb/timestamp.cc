@@ -21,8 +21,8 @@ std::ostream& operator << (std::ostream &out, const Timestamp& t) {
 }
 
 void Timestamp::update() {
-    // TODO: replace replica_id with an external call that returns the replica's identifier.
     _seq_number ++;
+    // TODO: replace replica_id with an external call that returns the replica's identifier.
     _uid = _replica_id;
 }
 
@@ -30,7 +30,7 @@ bool Timestamp::beginning_of_time() const {
     return _seq_number == 0;
 }
 
-uint64_t Timestamp::replica_id() {
+uint64_t Timestamp::replica_id() const {
     return _replica_id;
 }
 

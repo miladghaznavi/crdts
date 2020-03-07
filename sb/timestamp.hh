@@ -3,7 +3,7 @@
 
 #include <ostream>
 
-struct Timestamp {
+class Timestamp {
 private:
     uint64_t _seq_number{}; // A monotonically increasing sequence number.
     uint64_t _uid{}; // An identifier that is unique across all replicas.
@@ -41,7 +41,7 @@ public:
 
     /// Gets the value of replica
     /// \return
-    uint64_t replica_id();
+    uint64_t replica_id() const;
 
     /// Copies the sequence number and uid of a given timestamp.
     /// The replica id is not changed.

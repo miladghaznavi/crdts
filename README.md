@@ -17,8 +17,7 @@ A LWWRegister exposes the following operations:
 - `assign` that assigns a given value to the local object, and
 - `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
 
-`value` does not mutate the value of the register. If the LWWRegister is not initialized,
-calling `value` throws an exception.
+`value` does not mutate the value of the register.
 
 `assign` is idempotent but not commutative, violating the convergence property of the object.
 We use "last writer wins" policy to totally order `assign` operations allowing us to 
