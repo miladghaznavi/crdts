@@ -5,6 +5,9 @@
 #include "timestamp.hh"
 
 /// A LWWRegister is a variant of a register, i.e., a memory cell that stores a value.
+/// LWWRegister implements the ``last write wins'' policy, where among concurrent write
+/// operation across replicas, the latest one -- based on a global ordering -- wins the
+/// race. A LWWRegister contains a Timestamp object that globally order operations.
 class LWWRegister {
 private:
     Timestamp _timestamp;
@@ -12,7 +15,7 @@ private:
 
 public:
     /// Initialize the unique tag of the register with a given replica id.
-    /// This function is for test purposes and must be called right after constructing a register.
+    /// Note that this function is for test purposes and must be called right after constructing a register.
     /// An internal call can replace this function, where the internal call uses the mac address of an network
     /// interface as the unique identifier of the register unique tag
     /// \param replica_id the given replica id
