@@ -4,7 +4,8 @@
 #include <ostream>
 
 /// Timestamp can represent a unique tag or a unique timestamp across
-/// replicas with unique identifier.
+/// replicas with unique identifier. Timestamp can be used to provide
+/// global ordering.
 class Timestamp {
 private:
     uint64_t _seq_number{}; // A monotonically increasing sequence number.
