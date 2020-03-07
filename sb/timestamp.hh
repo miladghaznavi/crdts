@@ -3,6 +3,8 @@
 
 #include <ostream>
 
+/// Timestamp can represent a unique tag or a unique timestamp across
+/// replicas with unique identifier.
 class Timestamp {
 private:
     uint64_t _seq_number{}; // A monotonically increasing sequence number.
@@ -26,11 +28,11 @@ public:
     /// \return true of the two timestamps are equal, otherwise false
     friend bool operator == (const Timestamp& t1, const Timestamp& t2);
 
-    /// Feeding output stream with a timestamp
-    /// \param out the output stream
-    /// \param t the timestamp
-    /// \return output stream
-    friend std::ostream& operator << (std::ostream &out, const Timestamp& t);
+    /// Compares the inequality of two timestamp objects
+    /// \param t1 the first timestamp
+    /// \param t2 the second timestamp
+    /// \return true of the two timestamps are unequal, otherwise false
+    friend bool operator != (const Timestamp& t1, const Timestamp& t2);
 
     /// Update the timestamp by incrementing its sequence number
     void update();
@@ -44,9 +46,13 @@ public:
     uint64_t replica_id() const;
 
     /// Copies the sequence number and uid of a given timestamp.
-    /// The replica id is not changed.
+    /// The replica id is not copied.
     /// \param t the given timestamp
     void copy(const Timestamp &t);
+
+    /// Gets the sequence number
+    /// \return the sequence number
+    uint64_t sequence_number();
 };
 
 #endif //CRDTS_TIMESTAMP_HH

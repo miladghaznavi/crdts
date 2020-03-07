@@ -15,6 +15,10 @@ bool operator == (const Timestamp& t1, const Timestamp& t2) {
     return t1._seq_number == t2._seq_number and t1._uid == t2._uid;
 }
 
+bool operator != (const Timestamp& t1, const Timestamp& t2) {
+    return !(t1 == t2);
+}
+
 std::ostream& operator << (std::ostream &out, const Timestamp& t) {
     out << t._seq_number << t._uid;
     return out;
@@ -39,3 +43,6 @@ void Timestamp::copy(const Timestamp &t) {
     this->_seq_number = t._seq_number;
 }
 
+uint64_t Timestamp::sequence_number() {
+    return _seq_number;
+}
