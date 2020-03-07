@@ -9,20 +9,20 @@ ORSet::ORSet(uint64_t replica_id) {
     this->_versions[_replica_id].replica_id(this->_replica_id);
 }
 
-void ORSet::add(std::string &e) {
+void ORSet::add(const std::string &e) {
     _versions[_replica_id].update();
     _elements[e][_replica_id] = _versions[_replica_id];
 }
 
-bool ORSet::remove(std::string& e) {
+bool ORSet::remove(const std::string& e) {
     return _elements.erase(e) > 0;
 }
 
-bool ORSet::contains(std::string &e) {
+bool ORSet::contains(const std::string &e) {
     return _elements.count(e) > 0;
 }
 
-void ORSet::_merge_versions(ORSet& remote_set) {
+void ORSet::_merge_versions(const ORSet& remote_set) {
     for (auto v: remote_set._versions) {
         auto it = this->_versions.find(v.first);
 
@@ -33,7 +33,7 @@ void ORSet::_merge_versions(ORSet& remote_set) {
     }//for
 }
 
-void ORSet::_apply_remote_removes(ORSet& remote_set) {
+void ORSet::_apply_remote_removes(const ORSet& remote_set) {
 //    std::vector<std::string> removed;
 
     // Remove the elements that have been removed remotely.
@@ -89,7 +89,7 @@ void ORSet::_apply_remote_removes(ORSet& remote_set) {
 //    }
 }
 
-void ORSet::_apply_remote_adds(ORSet& remote_set) {
+void ORSet::_apply_remote_adds(const ORSet& remote_set) {
     for (const auto& remote_elem: remote_set._elements) {
         auto local_elem = this->_elements.find(remote_elem.first);
 
@@ -125,7 +125,7 @@ void ORSet::_apply_remote_adds(ORSet& remote_set) {
     }//for
 }
 
-void ORSet::merge(ORSet &remote_set) {
+void ORSet::merge(const ORSet &remote_set) {
     // apply remote remove operations
     _apply_remote_removes(remote_set);
 
