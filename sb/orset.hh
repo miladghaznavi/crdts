@@ -33,16 +33,19 @@ public:
     /// Adds a given element to the set
     /// \param e the given element
     void add(const std::string& e);
+    void add(const std::string&& e) { add(e); }
 
     /// Removes a given element from the set
     /// \param e the given element
     /// \return true if the given element existed and was removed, otherwise false
     bool remove(const std::string& e);
+    bool remove(const std::string&& e) { return remove(e); }
 
     /// Check if the given element exists in the set
     /// \param e the given element
     /// \return true if the given element exists, otherwise false
     bool contains(const std::string& e);
+    bool contains(const std::string&& e) { return contains(e); }
 
     /// Merges the local set with a given remote set
     /// \param remote_set the given remote set
