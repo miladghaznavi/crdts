@@ -10,12 +10,12 @@ include_directories(${GTEST_INCLUDE})
 set(TEST_SOURCE_FILES
         core/timestamp.hh
         core/timestamp.cc
-        sb/lwwregister.hh
-        sb/lwwregister.cc
-        sb/orset.hh
-        sb/orset.cc
-        sb/map.hh
-        sb/map.cc
+        statebased/lwwregister.hh
+        statebased/lwwregister.cc
+        statebased/orset.hh
+        statebased/orset.cc
+        statebased/map.hh
+        statebased/map.cc
         test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
         test/orset_uinttest.cc
