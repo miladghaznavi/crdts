@@ -1,9 +1,9 @@
 #include <gtest/gtest.h>
 #include "../statebased/map.hh"
 
-#define TEST_CASES 1000
-
 namespace {
+    #define MAP_TEST_CASES 1000
+
     TEST(Map, Constructor) {
         #define REPLICA_ID 10
         Map map(REPLICA_ID);
@@ -27,7 +27,7 @@ namespace {
         Map map(REPLICA_ID);
         std::unordered_map<std::string, std::string> ref;
 
-        for (int i = 0; i < TEST_CASES; ++i) {
+        for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
             map.put(k, v);
@@ -45,7 +45,7 @@ namespace {
         Map map(REPLICA_ID);
         std::unordered_map<std::string, std::string> ref;
 
-        for (int i = 0; i < TEST_CASES; ++i) {
+        for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
             map.put(k, v);
@@ -64,7 +64,7 @@ namespace {
         std::unordered_map<std::string, std::string> ref;
         std::vector<std::string> keys;
 
-        for (int i = 0; i < TEST_CASES; ++i) {
+        for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
             map.put(k, v);
@@ -96,7 +96,7 @@ namespace {
         #define REPLICA2_ID 2
         Map map2(REPLICA2_ID);
 
-        for (int i = 0; i < TEST_CASES; ++i) {
+        for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
             map1.put(k, v);
@@ -107,7 +107,7 @@ namespace {
                 keys.push_back(k);
         }//for
 
-        for (int i = 0; i < TEST_CASES; ++i) {
+        for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
             map2.put(k, v);

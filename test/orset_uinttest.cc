@@ -2,6 +2,8 @@
 #include "../statebased/orset.hh"
 
 namespace {
+    #define SET_TEST_CASES 1000
+
     TEST(ORSet, Constructor) {
         #define REPLICA_ID 10
         ORSet set(REPLICA_ID);
@@ -12,7 +14,7 @@ namespace {
         ORSet set(REPLICA_ID);
         std::unordered_set<std::string> ref;
 
-        for (int i = 0; i < 10; ++i) {
+        for (int i = 0; i < SET_TEST_CASES; ++i) {
             std::string b = std::to_string(random());
             set.add(b);
             ref.insert(b);
@@ -32,12 +34,17 @@ namespace {
 
     TEST(ORSet, Elements) {
         ORSet set(REPLICA_ID);
-
         std::unordered_set<std::string> ref;
-        for (int i = 0; i < 10; ++i) {
-            std::string b = "B" + std::to_string(i);
+        std::vector<std::string> keys;
+
+        for (int i = 0; i < SET_TEST_CASES; ++i) {
+            std::string b = std::to_string(random());
             set.add(b);
+
+            auto old_size = ref.size();
             ref.insert(b);
+            if (ref.size() > old_size)
+                keys.push_back(b);
         }//for
 
         auto elems = set.elements();
@@ -48,10 +55,9 @@ namespace {
 
         auto to_remove = random() % ref.size() + 1;
         for (int i = 0; i < to_remove; ++i) {
-            auto ind = random() % 10;
-            std::string b = "B" + std::to_string(ind);
-            ref.erase(b);
-            set.remove(b);
+            auto ind = random() % keys.size();
+            ref.erase(keys[ind]);
+            set.remove(keys[ind]);
         }//for
 
         elems = set.elements();

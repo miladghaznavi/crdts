@@ -2,12 +2,14 @@
 #include "../statebased/lwwregister.hh"
 
 namespace {
+    #define REGISTER_TEST_CASES 1000
+
     TEST(LWWRegister, AssignAndValue) {
         #define REPLICA_ID 1
         LWWRegister reg;
         reg.init_unique_id(REPLICA_ID);
 
-        for (auto i = 0; i < random() % 100 + 1; ++i) {
+        for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
             auto rand_val = random();
             reg.assign(std::to_string(rand_val));
             EXPECT_EQ(std::to_string(rand_val), reg.value());
@@ -24,7 +26,7 @@ namespace {
 
         // Try 100 random test where one of two registers is selected randomly,
         // is assigned a random value, and merged with the other register.
-        for (auto i = 0; i < 100; ++i) {
+        for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
             LWWRegister* f = &reg1;
             LWWRegister* s = &reg2;
 
