@@ -3,6 +3,7 @@
 
 namespace {
     #define SET_TEST_CASES 1000
+    #define SET_MULTI_OBJECTS 100
 
     TEST(ORSet, Constructor) {
         #define REPLICA_ID 10
@@ -108,6 +109,18 @@ namespace {
         auto elems = set2.elements();
         EXPECT_TRUE(elems == ref);
 
+        // Remove and then merge
+        for (int i = 0; i < elems.size() / 2; ++i) {
+            auto rand_ind = random() % keys.size();
+            set1.remove(keys[rand_ind]);
+            ref.erase(keys[rand_ind]);
+            std::swap(keys[rand_ind], keys[keys.size() - 1]);
+            keys.pop_back();
+        }//for
+        EXPECT_TRUE(ref == set1.elements());
+        set2.merge(set1);
+        EXPECT_TRUE(set1.elements() == set2.elements());
+
         // Merge random add and remove operations
         for (int i = 0; i < elems.size(); ++i) {
             // Select a set among set1 or set2
@@ -135,40 +148,46 @@ namespace {
         }//for
         set1.merge(set2);
         set2.merge(set1);
-        EXPECT_TRUE(ref == set1.elements());
         EXPECT_TRUE(set1.elements() == set2.elements());
 
-        // Check add-wins policy
-        // Concurrent add and remove, merging with add operation
-        std::string add_wins = "add-wins";
-        set1.add(add_wins);
-        set2.remove(add_wins);
-        set2.merge(set1);
-        EXPECT_TRUE(set2.contains(add_wins));
+        // Check add-wins policy: a more recent remove operation must win over an older add operation
+        for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
+            auto b = std::to_string(random());
+            set1.add(b);
+            set2.merge(set1);
+            EXPECT_TRUE(set1.contains(b));
+            EXPECT_TRUE(set2.contains(b));
 
-        // Concurrent add and remove, merging with remove operation
-        add_wins = "add-wins-2";
-        set1.add(add_wins);
-        set2.remove(add_wins);
-        set1.merge(set2);
-        EXPECT_TRUE(set1.contains(add_wins));
+            set2.remove(b);
+            set1.merge(set2);
+            EXPECT_FALSE(set1.contains(b));
+            EXPECT_FALSE(set2.contains(b));
+        }//for
 
-        // Concurrent add and remove, merge both sets, first add then remove
-        add_wins = "add-wins-3";
-        set1.add(add_wins);
-        set2.remove(add_wins);
-        set1.merge(set2);
-        set2.merge(set1);
-        EXPECT_TRUE(set1.contains(add_wins));
-        EXPECT_TRUE(set2.contains(add_wins));
+        // Check add-wins policy: an add operation must win over concurrent remove operation
+        for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
+            auto b = std::to_string(random());
+            set1.add(b);
+            EXPECT_TRUE(set1.contains(b));
 
-        // Concurrent add and remove, merging both sets, first remove then add
-        add_wins = "add-wins-4";
-        set1.add(add_wins);
-        set2.remove(add_wins);
-        set2.merge(set1);
-        set1.merge(set2);
-        EXPECT_TRUE(set1.contains(add_wins));
-        EXPECT_TRUE(set2.contains(add_wins));
+            set2.add(b);
+            EXPECT_TRUE(set2.contains(b));
+
+            set2.remove(b);
+            EXPECT_FALSE(set2.contains(b));
+
+            set1.merge(set2);
+            EXPECT_TRUE(set1.contains(b));
+
+            set2.add(b);
+            EXPECT_TRUE(set2.contains(b));
+
+            set2.remove(b);
+            EXPECT_FALSE(set2.contains(b));
+
+            // b must reappear in set2
+            set2.merge(set1);
+            EXPECT_TRUE(set2.contains(b));
+        }//for
     }//TEST
 }//namespace
