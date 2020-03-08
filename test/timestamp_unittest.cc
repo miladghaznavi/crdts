@@ -2,6 +2,8 @@
 #include "../core/timestamp.hh"
 
 namespace {
+#define TIMESTAMP_TEST_CASES 1000
+
     TEST(Timestamp, Intialize) {
         #define REPLICA_ID 10
         Timestamp reg;
@@ -13,7 +15,7 @@ namespace {
 
     TEST(Timestamp, Update) {
         Timestamp t;
-        auto random_repeat = random() % 100 + 1;
+        auto random_repeat = random() % TIMESTAMP_TEST_CASES + 1;
         for (int i = 0; i < random_repeat; ++i)
             t.update();
 
@@ -23,7 +25,7 @@ namespace {
     TEST(Timestamp, Copy) {
         Timestamp t1;
         t1.replica_id(1);
-        auto random_repeat = random() % 100 + 1;
+        auto random_repeat = random() % TIMESTAMP_TEST_CASES + 1;
         for (int i = 0; i < random_repeat; ++i)
             t1.update();
 
