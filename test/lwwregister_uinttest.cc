@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../sb/lwwregister.hh"
+#include "../statebased/lwwregister.hh"
 
 namespace {
     TEST(LWWRegister, AssignAndValue) {

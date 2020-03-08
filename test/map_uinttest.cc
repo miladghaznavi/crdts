@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../sb/map.hh"
+#include "../statebased/map.hh"
 
 #define TEST_CASES 1000
 

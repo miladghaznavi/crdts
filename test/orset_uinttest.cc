@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../sb/orset.hh"
+#include "../statebased/orset.hh"
 
 namespace {
     TEST(ORSet, Constructor) {
