@@ -12,8 +12,10 @@ namespace {
 
     TEST(ORSet, AddAndRemoveContainSingleReplica) {
         ORSet set(REPLICA_ID);
+        // Use an C++ unordered_set as a reference for testing
         std::unordered_set<std::string> ref;
 
+        // Add random values to the set
         for (int i = 0; i < SET_TEST_CASES; ++i) {
             std::string b = std::to_string(random());
             set.add(b);
@@ -21,12 +23,12 @@ namespace {
         }//for
 
         // Check the existence of added elements
-        for (auto e: ref) {
+        for (const auto& e: ref) {
             EXPECT_TRUE(set.contains(e));
         }//for
 
         // Check the existence of removed elements
-        for (auto e: ref) {
+        for (const auto& e: ref) {
             set.remove(e);
             EXPECT_FALSE(set.contains(e));
         }//for
@@ -34,9 +36,11 @@ namespace {
 
     TEST(ORSet, Elements) {
         ORSet set(REPLICA_ID);
+        // Use C++ unordered_set and vector as references
         std::unordered_set<std::string> ref;
         std::vector<std::string> keys;
 
+        // Adding random elements to set
         for (int i = 0; i < SET_TEST_CASES; ++i) {
             std::string b = std::to_string(random());
             set.add(b);
@@ -48,19 +52,27 @@ namespace {
         }//for
 
         auto elems = set.elements();
+
+        // Check if all random elements exist in `elems`
         for (int i = 0; i < ref.size(); i++) {
             EXPECT_TRUE(ref.count(*elems.begin()));
             elems.erase(elems.begin());
         }//for
 
+        // Remove some elements randomly
         auto to_remove = random() % ref.size() + 1;
         for (int i = 0; i < to_remove; ++i) {
             auto ind = random() % keys.size();
             ref.erase(keys[ind]);
             set.remove(keys[ind]);
+
+            std::swap(keys[ind], keys[keys.size() - 1]);
+            keys.pop_back();
         }//for
 
         elems = set.elements();
+
+        // Check if all remaining elements exist in `elems`
         for (int i = 0; i < elems.size(); i++) {
             EXPECT_TRUE(ref.count(*elems.begin()));
             elems.erase(elems.begin());
@@ -68,8 +80,9 @@ namespace {
     }//TEST
 
     TEST(ORSet, Merge) {
-        // We compare an ORSet with a C++ unordered_set as a reference
+        // We compare an ORSet with a C++ unordered_set and vector as references
         std::unordered_set<std::string> ref;
+        std::vector<std::string> keys;
 
         ORSet set1(REPLICA_ID);
         #define REPLICA2_ID 2
@@ -82,10 +95,14 @@ namespace {
         EXPECT_EQ(set1.size(), set2.size());
 
         // Merging an empty set with another set
-        for (int i = 0; i < 10; ++i) {
-            std::string b = "B" + std::to_string(i);
+        for (int i = 0; i < SET_TEST_CASES; ++i) {
+            std::string b = std::to_string(random());
             set1.add(b);
+
+            auto old_size = ref.size();
             ref.insert(b);
+            if (ref.size() > old_size)
+                keys.push_back(b);
         }//for
         set2.merge(set1);
         auto elems = set2.elements();
@@ -100,18 +117,20 @@ namespace {
             // Call an add or remove operation of the selected set randomly
             auto add_or_remove = random() % 2;
             if (add_or_remove == 0) {//add
-                std::string d = "D" + std::to_string(i);
-                p->add(d);
+                std::string b = std::to_string(random());
+                p->add(b);
 
-                ref.insert(d);
+                auto old_size = ref.size();
+                ref.insert(b);
+                if (ref.size() > old_size)
+                    keys.push_back(b);
             }//if
             else {//remove
-                auto b_or_c = random() % 2;
-                auto val = random() % 10;
-                std::string bc = ((b_or_c) ? "B" : "C") + std::to_string(val);
-
-                p->remove(bc);
-                ref.erase(bc);
+                auto rand_ind = random() % keys.size();
+                p->remove(keys[rand_ind]);
+                ref.erase(keys[rand_ind]);
+                std::swap(keys[rand_ind], keys[keys.size() - 1]);
+                keys.pop_back();
             }//else
         }//for
         set1.merge(set2);
