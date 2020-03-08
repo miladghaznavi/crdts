@@ -4,7 +4,7 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <string>
-#include "timestamp.hh"
+#include "../core/timestamp.hh"
 
 /// ORSet implements an "observed remove set" based on "optimized observed removed set" [1].
 /// [1] Bieniusa A, Zawirski M, Preguiça N, Shapiro M, Baquero C, Balegas V, Duarte S. (2012).

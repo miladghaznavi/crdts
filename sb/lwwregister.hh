@@ -2,7 +2,7 @@
 #define CRDTS_LWWREGISTER_HH
 
 #include <string>
-#include "timestamp.hh"
+#include "../core/timestamp.hh"
 
 /// A LWWRegister is a variant of a register, i.e., a memory cell that stores a value.
 /// LWWRegister implements the ``last write wins'' policy, where among concurrent write

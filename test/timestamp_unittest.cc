@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "../sb/timestamp.hh"
+#include "../core/timestamp.hh"
 
 namespace {
     TEST(Timestamp, Intialize) {
