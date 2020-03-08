@@ -19,7 +19,7 @@ public:
     /// An internal call can replace this function, where the internal call uses the mac address of an network
     /// interface as the unique identifier of the register unique tag
     /// \param replica_id the given replica id
-    void init_unique_tag(uint64_t replica_id);
+    void init_unique_id(uint64_t replica_id);
 
     /// Queries the value of the register
     /// \return the latest value
