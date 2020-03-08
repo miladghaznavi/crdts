@@ -14,7 +14,7 @@ private:
     std::string _value;
 
 public:
-    /// Initialize the unique tag of the register with a given replica id.
+    /// Initializes the unique tag of the register with a given replica id.
     /// Note that this function is for test purposes and must be called right after constructing a register.
     /// An internal call can replace this function, where the internal call uses the mac address of an network
     /// interface as the unique identifier of the register unique tag
@@ -29,7 +29,7 @@ public:
     /// \param value the given value
     void assign(const std::string& value);
 
-    /// Merge a given register with the local register
+    /// Merges a given register with the local register
     /// \param reg the given register
     void merge(const LWWRegister& reg);
 
