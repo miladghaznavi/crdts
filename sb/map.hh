@@ -44,6 +44,10 @@ public:
     /// Gets the number of key value pairs in the map
     /// \return the number of key value pairs
     size_t size();
+
+    /// Gets the replica id
+    /// \return the replica id
+    uint64_t replica_id();
 };
 
 #endif //CRDTS_MAP_HH
