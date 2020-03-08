@@ -48,6 +48,10 @@ public:
     /// Gets the replica id
     /// \return the replica id
     uint64_t replica_id();
+
+    /// Gets the key value pairs stored in the map
+    /// \return all key value pairs
+    std::unordered_map<std::string, std::string> key_value_pairs();
 };
 
 #endif //CRDTS_MAP_HH

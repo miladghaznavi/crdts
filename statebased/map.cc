@@ -66,3 +66,11 @@ size_t Map::size() {
 uint64_t Map::replica_id() {
     return _keys.replica_id();
 }
+
+std::unordered_map<std::string, std::string> Map::key_value_pairs() {
+    std::unordered_map<std::string, std::string> res;
+    for (const auto& kv: _registers)
+        res[kv.first] = kv.second.value();
+
+    return res;
+}
