@@ -8,6 +8,12 @@ The repository contains three directories:
 - `statebased` containing the implementation of state based CRDTs, and
 - `test` including test suites of implementations in both `core` and `statebased`.
 
+The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
+provides the details of using CRDT datatypes.
+For testcases look at the examples in the [test](https://github.com/miladghaznavi/crdts/tree/master/test) foler
+provides the details of using CRDT datatypes.
+
+
 ## State-based CRDTs
 We implement a __last writer wins register__, __optimized observed removed set__, and a 
 __add wins observed removed map__.
