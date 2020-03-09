@@ -38,10 +38,6 @@ public:
     /// Update the timestamp by incrementing its sequence number
     void update();
 
-    /// Checks if the current timestamp is at the beginning of time
-    /// \return true if at beginning of time, otherwise false.
-    bool beginning_of_time() const;
-
     /// Gets the value of replica
     /// \return
     uint64_t replica_id() const;

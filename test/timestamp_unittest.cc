@@ -10,7 +10,6 @@ namespace {
         reg.replica_id(REPLICA_ID);
 
         EXPECT_EQ(reg.replica_id(), REPLICA_ID);
-        EXPECT_TRUE(reg.beginning_of_time());
     }//TEST
 
     TEST(Timestamp, Update) {
