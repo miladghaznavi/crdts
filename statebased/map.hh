@@ -5,7 +5,7 @@
 #include "orset.hh"
 #include "lwwregister.hh"
 
-/// Map implements a convergent map with the ``add wins'' policy for keys and ``last writer wins'' policy for values.
+/// Map is a convergent map with the ``add wins'' policy for keys and the ``last writer wins'' policy for values.
 /// Map maintains keys in an ORSet to implement the former policy. By keeping each value in a LWWRegister, Map
 /// implements the latter policy.
 class Map {
