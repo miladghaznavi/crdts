@@ -3,7 +3,6 @@
 
 namespace {
     #define SET_TEST_CASES 1000
-    #define SET_MULTI_OBJECTS 100
 
     TEST(ORSet, Constructor) {
         #define REPLICA_ID 10
@@ -60,7 +59,7 @@ namespace {
             elems.erase(elems.begin());
         }//for
 
-        // Remove some elements randomly
+        // Randomly remove some elements
         auto to_remove = random() % ref.size() + 1;
         for (int i = 0; i < to_remove; ++i) {
             auto ind = random() % keys.size();
