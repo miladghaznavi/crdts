@@ -31,7 +31,7 @@ Run the following to test the repository:
 ```
 
 ## State-based CRDTs
-We implement a __last writer wins register__, __optimized observed removed set__, and a 
+The repository implements a __last writer wins register__, __optimized observed removed set__, and a 
 __add wins observed removed map__.
 
 ### Last Writer Wins Register (LWWRegister)
