@@ -26,18 +26,8 @@ of the register. We use "last writer wins" policy to totally order `assign` oper
 to *artificially* make `assign` commutative. Specifically, a *unique* timestamp is 
 assigned to each `assign` operation, and an `assign` operation with a larger timestamp wins
 the race with another `assign` operation. The uniqueness property prevents any tie between 
-timestamps leading to globally ordering `assign` operations.  
-
-We implement a timestamp using a monotonically increasing sequence number concatenated with
-a unique identifier (uid); the comparison of sequence numbers precedes that of uids in comparing
-two timestamps. Both the sequence number and uid are a 64 bit unsigned integer.
-
-A timestamp constructor takes a 64 bit integer to initialize its uid allowing us to externally
-ensure its uniqueness. Each call to `assign` increments the sequence number to order local `assign`
-operations. We handle the integer overflow when the 32 bit space sequence number is exhausted by
-the assumption that zero is larger than the maximum value, similar to TCP. 
-
-We can use the identifier of a replica as a uid. A replica's identifier is unique among all 
+timestamps leading to globally ordering `assign` operations.
+A replica's identifier is unique among all 
 replicas enabling us to break the ties when replicas associate the same sequence number to
 their `assign` operations.
 
