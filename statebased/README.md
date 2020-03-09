@@ -9,6 +9,7 @@ A LWWRegister exposes the following operations:
 - `assign` that assigns a given value to the local object, and
 - `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
 
+### `value` and `assign`
 `value` does not mutate the register.
 
 `assign` operations across different replicas do not commute, violating the convergence
@@ -21,10 +22,60 @@ A replica's identifier is unique among all
 replicas enabling us to break the ties when replicas associate the same sequence number to
 their `assign` operations.
 
+The following test case shows an exmaple of using these functions.
+
+```cpp
+#define REGISTER_TEST_CASES 1000
+
+TEST(LWWRegister, AssignAndValue) {
+    #define REPLICA_ID 1
+    LWWRegister reg;
+    reg.replica_id(REPLICA_ID);
+
+    for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
+        auto rand_val = random();
+        reg.assign(std::to_string(rand_val));
+        EXPECT_EQ(std::to_string(rand_val), reg.value());
+    }//for
+}//TEST
+```
+
+### `merge`
 `merge` is expected to be called at a downstream replica upon receiving a LWWRegister from 
 another replica. `merge` takes a LWWRegister object `r` and if the timestamp of `r` is greater
 than the local timestamp, it replaces its local value and timestamp with the value and
 timestamp of `r`.
+
+The following test case shows exmaples of simulating merge at two replicas.
+
+```cpp
+#define REGISTER_TEST_CASES 1000
+TEST(LWWRegister, Merge) {
+    #define REPLICA1_ID 1
+    #define REPLICA2_ID 2
+    LWWRegister reg1;
+    LWWRegister reg2;
+    reg1.replica_id(REPLICA1_ID);
+    reg1.replica_id(REPLICA2_ID);
+
+    // Multiple random tests select one of two registers randomly,
+    // assign a random value to the selected register, and merge
+    // the other register with the selected register.
+    for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
+        LWWRegister* f = &reg1;
+        LWWRegister* s = &reg2;
+
+        auto swap = random() % 2;
+        if (swap == 1)
+            std::swap(s, f);
+
+        auto rand_val = random();
+        f->assign(std::to_string(rand_val));
+        s->merge(*f);
+        EXPECT_EQ(f->value(), s->value());
+    }//for
+}//TEST
+```
 
 ## Observed Removed set (ORSet)
 An optimized observed removed set (ORSet) [[2]](#2) is a variant of set, that is, a collection of
@@ -47,7 +98,125 @@ over concurrent `remove` operations on `e`.
 The original ORSet consumes unbounded memory because `remove` does not release any memory allocation.
 Thus, the memory usage grows by the number of add operations. The optimized variant of ORSet subsumes
 the need for tombestone set and bound the memory usage of the set; a `remove` operation is effective
-only after an add, thus there is no need to maintain the tombestone set. 
+only after an add, thus there is no need to maintain the tombestone set.
+
+```cpp
+#define SET_TEST_CASES 1000
+
+TEST(ORSet, Constructor) {
+    #define REPLICA_ID 10
+    ORSet set(REPLICA_ID);
+    EXPECT_EQ(REPLICA_ID, set.replica_id());
+}//TEST
+```
+
+```cpp
+TEST(ORSet, AddAndRemoveContainSingleReplica) {
+    ORSet set(REPLICA_ID);
+    // Use an C++ unordered_set as a reference for testing
+    std::unordered_set<std::string> ref;
+
+    // Add random values to the set
+    for (int i = 0; i < SET_TEST_CASES; ++i) {
+        std::string b = std::to_string(random());
+        set.add(b);
+        ref.insert(b);
+    }//for
+
+    // Check the existence of added elements
+    for (const auto& e: ref) {
+        EXPECT_TRUE(set.contains(e));
+    }//for
+
+    // Check the existence of removed elements
+    for (const auto& e: ref) {
+        set.remove(e);
+        EXPECT_FALSE(set.contains(e));
+    }//for
+}//TEST
+```
+
+```cpp
+TEST(ORSet, Elements) {
+    ORSet set(REPLICA_ID);
+    // Use C++ unordered_set and vector as references
+    std::unordered_set<std::string> ref;
+    std::vector<std::string> keys;
+
+    // Adding random elements to set
+    for (int i = 0; i < SET_TEST_CASES; ++i) {
+        std::string b = std::to_string(random());
+        set.add(b);
+
+        auto old_size = ref.size();
+        ref.insert(b);
+        if (ref.size() > old_size)
+            keys.push_back(b);
+    }//for
+
+    auto elems = set.elements();
+
+    // Check if all random elements exist in `elems`
+    for (int i = 0; i < ref.size(); i++) {
+        EXPECT_TRUE(ref.count(*elems.begin()));
+        elems.erase(elems.begin());
+    }//for
+
+    // Randomly remove some elements
+    auto to_remove = random() % ref.size() + 1;
+    for (int i = 0; i < to_remove; ++i) {
+        auto ind = random() % keys.size();
+        ref.erase(keys[ind]);
+        set.remove(keys[ind]);
+
+        std::swap(keys[ind], keys[keys.size() - 1]);
+        keys.pop_back();
+    }//for
+
+    elems = set.elements();
+
+    // Check if all remaining elements exist in `elems`
+    for (int i = 0; i < elems.size(); i++) {
+        EXPECT_TRUE(ref.count(*elems.begin()));
+        elems.erase(elems.begin());
+    }//for
+}//TEST
+```
+
+```cpp
+#define REPLICA1_ID 2
+#define REPLICA2_ID 2
+
+TEST(ORSet, Merge) {
+    ORSet set1(REPLICA_ID);
+    ORSet set2(REPLICA2_ID);
+    // Check add-wins policy: an add operation must win over concurrent remove operation
+    for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
+        auto b = std::to_string(random());
+        set1.add(b);
+        EXPECT_TRUE(set1.contains(b));
+
+        set2.add(b);
+        EXPECT_TRUE(set2.contains(b));
+
+        set2.remove(b);
+        EXPECT_FALSE(set2.contains(b));
+
+        set1.merge(set2);
+        EXPECT_TRUE(set1.contains(b));
+
+        set2.add(b);
+        EXPECT_TRUE(set2.contains(b));
+
+        set2.remove(b);
+        EXPECT_FALSE(set2.contains(b));
+
+        // b must reappear in set2
+        set2.merge(set1);
+        EXPECT_TRUE(set2.contains(b));
+    }//for
+}//TEST
+```
 
 `merge` takes an ORSet object that, and merge it with the local ORSet object. We call operations performed 
 by the received object __remote__. `merge` applies remote remove operations, applies remote add operations,
