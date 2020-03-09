@@ -14,8 +14,8 @@ For testcases look at the examples in the [test](https://github.com/miladghaznav
 provides the details of using CRDT datatypes.
 
 ## Setup and Test
-The implementation is tested using [googltest](https://github.com/google/googletest).
-Script `setup.sh` from the root folder of this repository installs the googletest.
+The implementation is tested using [Google Test](https://github.com/google/googletest).
+Script `setup.sh` from the root folder of this repository installs Google Test.
 
 ```bash
 sudo ./setup.sh
