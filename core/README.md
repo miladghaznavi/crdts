@@ -32,7 +32,7 @@ TEST(Timestamp, Update) {
 }//TEST
 ```
 
-## Updating a timestamp
+## Copying a timestamp
 ```cpp
 TEST(Timestamp, Copy) {
     Timestamp t1;
