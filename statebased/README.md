@@ -9,6 +9,7 @@ A LWWRegister exposes the following operations:
 - `assign` that assigns a given value to the local object, and
 - `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
 
+### `value` and `assign`
 `value` does not mutate the register.
 
 `assign` operations across different replicas do not commute, violating the convergence
@@ -21,10 +22,60 @@ A replica's identifier is unique among all
 replicas enabling us to break the ties when replicas associate the same sequence number to
 their `assign` operations.
 
+The following test case shows an exmaple of using these functions.
+
+```cpp
+#define REGISTER_TEST_CASES 1000
+
+TEST(LWWRegister, AssignAndValue) {
+    #define REPLICA_ID 1
+    LWWRegister reg;
+    reg.replica_id(REPLICA_ID);
+
+    for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
+        auto rand_val = random();
+        reg.assign(std::to_string(rand_val));
+        EXPECT_EQ(std::to_string(rand_val), reg.value());
+    }//for
+}//TEST
+```
+
+### `merge`
 `merge` is expected to be called at a downstream replica upon receiving a LWWRegister from 
 another replica. `merge` takes a LWWRegister object `r` and if the timestamp of `r` is greater
 than the local timestamp, it replaces its local value and timestamp with the value and
 timestamp of `r`.
+
+The following test case shows exmaples of simulating merge at two replicas.
+
+```cpp
+#define REGISTER_TEST_CASES 1000
+TEST(LWWRegister, Merge) {
+    #define REPLICA1_ID 1
+    #define REPLICA2_ID 2
+    LWWRegister reg1;
+    LWWRegister reg2;
+    reg1.replica_id(REPLICA1_ID);
+    reg1.replica_id(REPLICA2_ID);
+
+    // Multiple random tests select one of two registers randomly,
+    // assign a random value to the selected register, and merge
+    // the other register with the selected register.
+    for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
+        LWWRegister* f = &reg1;
+        LWWRegister* s = &reg2;
+
+        auto swap = random() % 2;
+        if (swap == 1)
+            std::swap(s, f);
+
+        auto rand_val = random();
+        f->assign(std::to_string(rand_val));
+        s->merge(*f);
+        EXPECT_EQ(f->value(), s->value());
+    }//for
+}//TEST
+```
 
 ## Observed Removed set (ORSet)
 An optimized observed removed set (ORSet) [[2]](#2) is a variant of set, that is, a collection of
