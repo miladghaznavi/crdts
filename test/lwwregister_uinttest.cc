@@ -24,8 +24,9 @@ namespace {
         reg1.replica_id(REPLICA1_ID);
         reg1.replica_id(REPLICA2_ID);
 
-        // Try 100 random test where one of two registers is selected randomly,
-        // is assigned a random value, and merged with the other register.
+        // Multiple random tests select one of two registers randomly,
+        // assign a random value to the selected register, and merge
+        // the other register with the selected register.
         for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
             LWWRegister* f = &reg1;
             LWWRegister* s = &reg2;
