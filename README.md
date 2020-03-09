@@ -35,7 +35,7 @@ The repository implements a __last writer wins register__, an __optimized observ
 __add wins observed removed map__.
 
 ### Last Writer Wins Register (LWWRegister)
-A LWWRegister is a variant of a register, i.e., a memory cell that stores an opaque value [[1]](#1).
+A LWWRegister is a variant of a register, i.e., a memory cell that stores a value [[1]](#1).
 A LWWRegister exposes the following operations:
 - `value` that queries the most recent value of the local object,
 - `assign` that assigns a given value to the local object, and
