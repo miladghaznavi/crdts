@@ -13,6 +13,22 @@ provides the details of using CRDT datatypes.
 For testcases look at the examples in the [test](https://github.com/miladghaznavi/crdts/tree/master/test) foler
 provides the details of using CRDT datatypes.
 
+## Setup and Test
+The implementation is tested using [googltest](https://github.com/google/googletest).
+Script `setup.sh` from the root folder of this repository installs the googletest.
+
+```bash
+sudo ./setup.sh
+```
+
+Run `test.sh` from the root folder of this repository to test the entire implementation.
+This script compiles the repository. It places the compiled files in a folder `install` and 
+creates a binary file `crdts_test` which runs all test cases of the entire implementation.
+Run the following to test the repository:
+
+```bash
+./test.sh
+```
 
 ## State-based CRDTs
 We implement a __last writer wins register__, __optimized observed removed set__, and a 
