@@ -13,7 +13,7 @@ We implement a __last writer wins register__, __optimized observed removed set__
 __add wins observed removed map__.
 
 ### Last Writer Wins Register (LWWRegister)
-A LWWRegister is a variant of a register, i.e., a memory cell that stores an opaque value.
+A LWWRegister is a variant of a register, i.e., a memory cell that stores an opaque value [[1]](#1).
 A LWWRegister exposes the following operations:
 - `value` that queries the most recent value of the local object,
 - `assign` that assigns a given value to the local object, and
@@ -47,7 +47,7 @@ than the local timestamp, it replaces its local value and timestamp with the val
 timestamp of `r`.
 
 ### Observed Removed set (ORSet)
-An optimized observed removed set (ORSet) [[1]](#1) is a variant of set, that is, a collection of
+An optimized observed removed set (ORSet) [[2]](#2) is a variant of set, that is, a collection of
 unique elements.
 
 A set exposes the following operations:
@@ -100,7 +100,10 @@ of local key value pairs may be removed, so `merge` also removes `unordered_map`
 keys. Then, `merge` merges registers associated with remaining keys.
 
 # References
-<a id="1">[1]</a> 
+<a id="1">[1]</a>
+Shapiro, M., Preguiça, N., Baquero, C., & Zawirski, M. (2011, October). Conflict-free replicated data types. In Symposium on Self-Stabilizing Systems (pp. 386-400). Springer, Berlin, Heidelberg.
+
+<a id="2">[2]</a> 
 Bieniusa A, Zawirski M, Preguiça N, Shapiro M, Baquero C, Balegas V, Duarte S. (2012). 
 An optimized conflict-free replicated set
 arXiv preprint arXiv:1210.3368.
