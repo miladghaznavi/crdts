@@ -1,6 +1,6 @@
 #include "lwwregister.hh"
 
-void LWWRegister::init_unique_id(uint64_t replica_id) {
+void LWWRegister::replica_id(uint64_t replica_id) {
     this->_timestamp.replica_id(replica_id);
 }
 

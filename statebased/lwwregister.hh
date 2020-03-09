@@ -14,12 +14,12 @@ private:
     std::string _value;
 
 public:
-    /// Initializes the unique tag of the register with a given replica id.
+    /// Sets the replica id of the register.
     /// Note that this function is for test purposes and must be called right after constructing a register.
     /// An internal call can replace this function, where the internal call uses the mac address of an network
     /// interface as the unique identifier of the register unique tag
     /// \param replica_id the given replica id
-    void init_unique_id(uint64_t replica_id);
+    void replica_id(uint64_t replica_id);
 
     /// Queries the value of the register
     /// \return the latest value

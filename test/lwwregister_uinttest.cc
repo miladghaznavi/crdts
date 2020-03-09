@@ -7,7 +7,7 @@ namespace {
     TEST(LWWRegister, AssignAndValue) {
         #define REPLICA_ID 1
         LWWRegister reg;
-        reg.init_unique_id(REPLICA_ID);
+        reg.replica_id(REPLICA_ID);
 
         for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
             auto rand_val = random();
@@ -21,8 +21,8 @@ namespace {
         #define REPLICA2_ID 2
         LWWRegister reg1;
         LWWRegister reg2;
-        reg1.init_unique_id(REPLICA1_ID);
-        reg1.init_unique_id(REPLICA2_ID);
+        reg1.replica_id(REPLICA1_ID);
+        reg1.replica_id(REPLICA2_ID);
 
         // Try 100 random test where one of two registers is selected randomly,
         // is assigned a random value, and merged with the other register.

@@ -6,7 +6,7 @@ void Map::put(const std::string &key, const std::string &val) {
     _keys.add(key);
     if (_registers.count(key) == 0) {
         // initialize a register for the first time
-        _registers[key].init_unique_id(_keys.replica_id());
+        _registers[key].replica_id(_keys.replica_id());
     }//if
 
     _registers[key].assign(val);
@@ -48,7 +48,7 @@ void Map::merge(const Map &map) {
         else if (this->_keys.contains(remote_reg.first)) {
             // The register associate to the remote key does not locally exist, add the associated register.
             // We initialize the local register with the remote value, then merge two registers.
-            this->_registers[remote_reg.first].init_unique_id(this->replica_id());
+            this->_registers[remote_reg.first].replica_id(this->replica_id());
             this->_registers[remote_reg.first].assign(remote_reg.second.value());
             this->_registers[remote_reg.first].merge(remote_reg.second);
         }//else if
