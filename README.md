@@ -55,13 +55,13 @@ is assigned a new tag. This implements *add wins* policy where an `add` on an  e
 over concurrent `remove` operations on `e`.
 
 The original ORSet consumes unbounded memory because `remove` does not release any memory allocation.
-Thus, the memory usage grows by the number of add operations. OptORSet subsumes the need for tombestone
-set and bound the memory usage of the set; a `remove` operation is effective only after an add,
-thus there is no need to maintain the tombestone set. 
+Thus, the memory usage grows by the number of add operations. The optimized variant of ORSet subsumes
+the need for tombestone set and bound the memory usage of the set; a `remove` operation is effective
+only after an add, thus there is no need to maintain the tombestone set. 
 
-`merge` takes an ORSet object that we call it remote set, and merge it with the local ORSet object. `merge`
-applies remote remove operations, applies remote add operations, and updates the local version vector
-with the remote version vector.
+`merge` takes an ORSet object that, and merge it with the local ORSet object. We call operations performed 
+by the received object __remote__. `merge` applies remote remove operations, applies remote add operations,
+and updates the local version vector with the remote version vector.
 
 ### Map
 Map implements a convergent key value store. A map exposes the following operations,
