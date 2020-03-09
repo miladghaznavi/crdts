@@ -184,90 +184,12 @@ TEST(ORSet, Elements) {
 ```
 
 ```cpp
+#define REPLICA1_ID 2
+#define REPLICA2_ID 2
+
 TEST(ORSet, Merge) {
-    // We compare an ORSet with a C++ unordered_set and vector as references
-    std::unordered_set<std::string> ref;
-    std::vector<std::string> keys;
-
     ORSet set1(REPLICA_ID);
-    #define REPLICA2_ID 2
     ORSet set2(REPLICA2_ID);
-
-    // Merging two empty set
-    set1.merge(set2);
-    set2.merge(set1);
-    EXPECT_EQ(0, set1.size());
-    EXPECT_EQ(set1.size(), set2.size());
-
-    // Merging an empty set with another set
-    for (int i = 0; i < SET_TEST_CASES; ++i) {
-        std::string b = std::to_string(random());
-        set1.add(b);
-
-        auto old_size = ref.size();
-        ref.insert(b);
-        if (ref.size() > old_size)
-            keys.push_back(b);
-    }//for
-    set2.merge(set1);
-    auto elems = set2.elements();
-    EXPECT_TRUE(elems == ref);
-
-    // Remove and then merge
-    for (int i = 0; i < elems.size() / 2; ++i) {
-        auto rand_ind = random() % keys.size();
-        set1.remove(keys[rand_ind]);
-        ref.erase(keys[rand_ind]);
-        std::swap(keys[rand_ind], keys[keys.size() - 1]);
-        keys.pop_back();
-    }//for
-    EXPECT_TRUE(ref == set1.elements());
-    set2.merge(set1);
-    EXPECT_TRUE(set1.elements() == set2.elements());
-
-    // Merge random add and remove operations
-    for (int i = 0; i < elems.size(); ++i) {
-        // Select a set among set1 or set2
-        auto first_or_second = random() % 2;
-        ORSet* p = (first_or_second == 0) ? &set1 : &set2;
-
-        // Call an add or remove operation of the selected set randomly
-        auto add_or_remove = random() % 2;
-        if (add_or_remove == 0) {//add
-            std::string b = std::to_string(random());
-            p->add(b);
-
-            auto old_size = ref.size();
-            ref.insert(b);
-            if (ref.size() > old_size)
-                keys.push_back(b);
-        }//if
-        else {//remove
-            auto rand_ind = random() % keys.size();
-            p->remove(keys[rand_ind]);
-            ref.erase(keys[rand_ind]);
-            std::swap(keys[rand_ind], keys[keys.size() - 1]);
-            keys.pop_back();
-        }//else
-    }//for
-    set1.merge(set2);
-    set2.merge(set1);
-    EXPECT_TRUE(set1.elements() == set2.elements());
-
-    // Check add-wins policy: a more recent remove operation must win over an older add operation
-    for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
-        auto b = std::to_string(random());
-        set1.add(b);
-        set2.merge(set1);
-        EXPECT_TRUE(set1.contains(b));
-        EXPECT_TRUE(set2.contains(b));
-
-        set2.remove(b);
-        set1.merge(set2);
-        EXPECT_FALSE(set1.contains(b));
-        EXPECT_FALSE(set2.contains(b));
-    }//for
-
     // Check add-wins policy: an add operation must win over concurrent remove operation
     for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
         auto b = std::to_string(random());
