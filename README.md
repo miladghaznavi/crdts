@@ -10,8 +10,8 @@ The repository contains three directories:
 
 The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
 provides the details of using CRDT datatypes.
-For testcases look at the examples in the [test](https://github.com/miladghaznavi/crdts/tree/master/test) foler
-provides the details of using CRDT datatypes.
+[test](https://github.com/miladghaznavi/crdts/tree/master/test) folder contains testcase
+examples of using CRDT datatypes.
 
 ## Setup and Test
 The implementation is tested using [Google Test](https://github.com/google/googletest).
