@@ -9,7 +9,7 @@ A LWWRegister exposes the following operations:
 - `assign` that assigns a given value to the local object, and
 - `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
 
-### `value` and `assign`
+### Local operations: `value` and `assign`
 `value` does not mutate the register.
 
 `assign` operations across different replicas do not commute, violating the convergence
@@ -40,7 +40,7 @@ TEST(LWWRegister, AssignAndValue) {
 }//TEST
 ```
 
-### `merge`
+### Operations at a downstream replica: `merge`
 `merge` is expected to be called at a downstream replica upon receiving a LWWRegister from 
 another replica. `merge` takes a LWWRegister object `r` and if the timestamp of `r` is greater
 than the local timestamp, it replaces its local value and timestamp with the value and
@@ -103,7 +103,7 @@ TEST(ORSet, Constructor) {
 }//TEST
 ```
 
-### `add`, `remove`, and `contains`
+### Local operations: `add`, `remove`, and `contains`
 `add` and `remove` are idempotent and commutative, and `contains` does not mutate an object.
 However, concurrent `add` and `remove` on the same element do not commute. To enforce convergence, 
 the original ORSet distinguishes between `add` operations on the same element by assigning a unique
@@ -145,7 +145,7 @@ TEST(ORSet, AddAndRemoveContainsSingleReplica) {
 }//TEST
 ```
 
-### `merge`
+### Operations at a downstream replica: `merge`
 `merge` takes an ORSet object that, and merge it with the local ORSet object. We call operations performed 
 by the received object __remote__. `merge` applies remote remove operations, applies remote add operations,
 and updates the local version vector with the remote version vector.
@@ -210,7 +210,7 @@ TEST(Map, Constructor) {
 }//TEST
 ```
 
-### `get` 
+### Local operations: `get`, `put`, `remove`, and `contains`
 
 `get` and `contains` do not mutate the object. 
 
@@ -310,7 +310,7 @@ TEST(Map, PutAndRemoveAndConatinsAndGet) {
 }//TEST
 ```
 
-### `merge`
+### Operations at a downstream replica: `merge`
 `merge` "merges" the keys and values of the local object with those of a received map. In merging keys, some
 of local key value pairs may be removed, so `merge` also removes `unordered_map` entries associated with these 
 keys. Then, `merge` merges registers associated with remaining keys.
