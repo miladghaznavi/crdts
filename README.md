@@ -1,31 +1,32 @@
 # Conflict Free Replicated Data Types
 
-This repository implements conflict free replicated data types (CRDTs).
-Specifically, this repository implements and tests on state-based CRDTs,  
-It contains two directories.
-`sb` includes the implementation of state based state objects, 
-and `test` contains test suites to test the implementation.
+This repository implements and test conflict free replicated data types (CRDTs).
+Specifically, it focuses on state-based CRDTs.
+
+The repository contains three directories:
+- `core` including data types that can be used in implementing all CRDTs,
+- `statebased` containing the implementation of state based CRDTs, and
+- `test` including test suites of implementations in both `core` and `statebased`.
 
 ## State-based CRDTs
-We implement a __last-writer-wins register__, __optimized-observed-removed set__, and a 
-__add-wins-observed-removed-map__.
+We implement a __last writer wins register__, __optimized observed removed set__, and a 
+__add wins observed removed map__.
 
-### Last-writer-wins Register (LWWRegister)
-A LWWRegister object is a variant of a register, i.e., a memory cell that stores a value.
+### Last Writer Wins Register (LWWRegister)
+A LWWRegister is a variant of a register, i.e., a memory cell that stores an opaque value.
 A LWWRegister exposes the following operations:
 - `value` that queries the most recent value of the local object,
 - `assign` that assigns a given value to the local object, and
 - `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
 
-`value` does not mutate the value of the register.
+`value` does not mutate the register.
 
-`assign` is idempotent but not commutative, violating the convergence property of the object.
-We use "last writer wins" policy to totally order `assign` operations allowing us to 
-*artificially* make this operation commutative.
-Specifically, a *unique* timestamp is assigned to each `assign` operation, and an `assign`
-operation with a larger timestamp wins the race with another `assign` operation. The uniqueness
-property of a timestamp is particularly important because it prevents any tie
-between timestamps.
+`assign` operations across different replicas do not commute, violating the convergence
+of the register. We use "last writer wins" policy to totally order `assign` operations
+to *artificially* make `assign` commutative. Specifically, a *unique* timestamp is 
+assigned to each `assign` operation, and an `assign` operation with a larger timestamp wins
+the race with another `assign` operation. The uniqueness property prevents any tie between 
+timestamps leading to globally ordering `assign` operations.  
 
 We implement a timestamp using a monotonically increasing sequence number concatenated with
 a unique identifier (uid); the comparison of sequence numbers precedes that of uids in comparing
@@ -45,13 +46,6 @@ another replica. `merge` takes a LWWRegister object `r` and if the timestamp of 
 than the local timestamp, it replaces its local value and timestamp with the value and
 timestamp of `r`.
 
-An `assign` operation proceeding a `merge` must be still able to use the local replica's 
-identifier as the uid of its timestamp. To implement this, a timestamp resets its uid to 
-the identifier of its local replica in addition to incrementing its sequence number. The 
-timestamp still captures the casual dependency because the updated timestamp is still larger 
-than the timestamp of `merge` (recall that a timestamp "happens before" another one if its 
-sequence number is smaller).
-
 ### Observed Removed set (ORSet)
 An optimized observed removed set (ORSet) [[1]](#1) is a variant of set, that is, a collection of
 unique elements.
@@ -67,13 +61,13 @@ However, concurrent `add` and `remove` on the same element do not commute. To en
 the original ORSet distinguishes between `add` operations on the same element by assigning a unique
 tag to each `add` invocation and storing the unique identifier alongside the  element. An element 
 is removed by moving it to a tombstone set. An element can be always added to the set because it
-is assigned a new tag. This implements *add-wins* policy where an `add` on an  element `e` wins
+is assigned a new tag. This implements *add wins* policy where an `add` on an  element `e` wins
 over concurrent `remove` operations on `e`.
 
 The original ORSet consumes unbounded memory because `remove` does not release any memory allocation.
 Thus, the memory usage grows by the number of add operations. OptORSet subsumes the need for tombestone
-set and bound the memory usage of the set. The intution is that because a `remove` operation is effective
-only after an add, there is no need to maintain the tombestone set. 
+set and bound the memory usage of the set; a `remove` operation is effective only after an add,
+thus there is no need to maintain the tombestone set. 
 
 `merge` takes an ORSet object that we call it remote set, and merge it with the local ORSet object. `merge`
 applies remote remove operations, applies remote add operations, and updates the local version vector

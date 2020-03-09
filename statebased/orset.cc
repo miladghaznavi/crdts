@@ -23,45 +23,49 @@ bool ORSet::contains(const std::string &e) {
 }
 
 void ORSet::_merge_versions(const ORSet& remote_set) {
-    for (auto v: remote_set._versions) {
-        auto it = this->_versions.find(v.first);
+    for (const auto& v: remote_set._versions) {
+        auto local_version = this->_versions.find(v.first);
 
-        if (it != this->_versions.end())
-            it->second = std::max(it->second, v.second);
-        else
+        if (local_version != this->_versions.end()) {
+            // Local replica has observed the version of this remote replica
+            local_version->second = std::max(local_version->second, v.second);
+        }//if
+        else {
+            // Local replica has not observed the version of this remote replica
             this->_versions[v.first] = v.second;
+        }//else
     }//for
 }
 
 void ORSet::_apply_remote_removes(const ORSet& remote_set) {
-//    std::vector<std::string> removed;
-
-    // Remove the elements that have been removed remotely.
-    // Add-wins policy is applied for concurrent add and remove operations
+    // Remove elements that have been removed remotely.
+    // Add wins policy is applied for concurrent add and remove operations
     for (auto local_elem = this->_elements.begin(); local_elem != this->_elements.end(); /* no increment here */) {
-        // If the element has been removed remotely if it does not exist in the remote set.
+        // An element has been removed remotely if it does not exist in the remote set.
         if (remote_set._elements.count(local_elem->first) == 0) {
-            // Applying the add-wins policy to see if there is a concurrent or newer add
+            // Applying the add wins policy: find a concurrent or newer add
             bool newer_remote_remove = true;
-            for (const auto& observed_add: local_elem->second) {
-                auto remote_remove = remote_set._versions.find(observed_add.first);
+            for (const auto& local_add: local_elem->second) {
+                auto remote_remove = remote_set._versions.find(local_add.first);
 
-                if (remote_remove == remote_set._versions.end() or remote_remove->second < observed_add.second) {
+                if (remote_remove == remote_set._versions.end() or remote_remove->second < local_add.second) {
+                    // A concurrent or newer local add exists, so the remote remove is not newer
+                    // based on ``add wins'' policy
                     newer_remote_remove = false;
                     break;
                 }//if
             }//for
 
             if (newer_remote_remove) {
-                // Find an evidence that there has been a remote remove by examining the versions of replicas observed
-                // in the remove set
+                // Find an evidence that there has been a remote remove by examining the versions
+                // of replicas observed in the remote set
                 newer_remote_remove = false;
                 for (const auto &remote_remove: remote_set._versions) {
                     auto local_add = local_elem->second.find(remote_remove.first);
-                    // We have an evidence if the timestamp associated to the replica id
-                    // has not been seen locally or this timestamp is newer than observed timestamp locally
+                    // An evidence would be that a timestamp associated to a replica id
+                    // has not been seen locally or this timestamp is newer than an locally observed timestamp
                     if (local_add == local_elem->second.end() or local_add->second < remote_remove.second) {
-                        // Evidence is found, let's break the search
+                        // An evidence is found
                         newer_remote_remove = true;
                         break;
                     }//if
@@ -69,8 +73,6 @@ void ORSet::_apply_remote_removes(const ORSet& remote_set) {
             }//if
 
             if (newer_remote_remove) {
-//                removed.push_back(local_elem->first);
-
                 // Remove the element that has been remotely removed, and move to next local element
                 local_elem = this->_elements.erase(local_elem);
             }//if
@@ -82,18 +84,15 @@ void ORSet::_apply_remote_removes(const ORSet& remote_set) {
             ++local_elem;
         }//else
     }//for
-
-//    std::cout << "Removed:" << std::endl;
-//    for (auto r: removed) {
-//        std::cout << r << std::endl;
-//    }
 }
 
 void ORSet::_apply_remote_adds(const ORSet& remote_set) {
+    // Add remote elements locally. A remote element is not added if the local replica has received and then
+    // removed the element earlier.
     for (const auto& remote_elem: remote_set._elements) {
         auto local_elem = this->_elements.find(remote_elem.first);
 
-        // Check if the remote_set element exists locally
+        // Check if the remote_set element locally exists
         if (local_elem != this->_elements.end()) {
             // The element already exists, update the timestamps
             for (auto remote_timestamp: remote_elem.second) {
@@ -105,11 +104,11 @@ void ORSet::_apply_remote_adds(const ORSet& remote_set) {
             }//for
         }//if
         else {
-            // The element does not exist locally,
+            // The element does not exist locally
             bool more_recent = false;
             for (auto remote_timestamp: remote_elem.second) {
-                // Check if a remote timestamp is newer the a local timestamp
-                // A single remote timestamp is sufficient because of add-wins policy
+                // Check if a remote timestamp is newer than the local timestamp
+                // A single newer remote timestamp is sufficient due to the ``add wins'' policy
                 if (this->_versions.count(remote_timestamp.first) == 0 or
                     this->_versions[remote_timestamp.first] < remote_timestamp.second) {
                     more_recent = true;
