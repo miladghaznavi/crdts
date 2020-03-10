@@ -23,9 +23,8 @@ sudo ./setup.sh
 ```
 
 Run `test.sh` from the root folder of this repository to test the entire implementation.
-This script compiles the repository. It places the compiled files in the folder `install` and 
-creates a binary file `crdts_test` which runs all test cases of the entire implementation.
-Run the following to test the repository:
+This script compiles the repository, places the compiled files in the folder `install`, and 
+creates a binary file `crdts_test` that runs test cases. Run the following to test the repository:
 
 ```bash
 ./test.sh
