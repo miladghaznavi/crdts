@@ -37,19 +37,19 @@ __add wins observed removed map__.
 ### Last Writer Wins Register (LWWRegister)
 A LWWRegister is a variant of a register, i.e., a memory cell that stores a value [[1]](#1).
 A LWWRegister exposes the following operations:
-- `value` that queries the most recent value of the local object,
-- `assign` that assigns a given value to the local object, and
-- `merge` that "merges" a LWWRegister received at a downstream replica with the local object.
+- `value` that queries the most recent value of the local LWWRegister object,
+- `assign` that assigns a given value to the local LWWRegister object, and
+- `merge` that "merges" a LWWRegister received at a downstream replica with the local LWWRegister object.
 
 ### Observed Removed set (ORSet)
 An optimized observed removed set (ORSet) [[2]](#2) is a variant of set, that is, a collection of
 unique elements.
 
 A set exposes the following operations:
-- `add` that add an element to to the local object,
-- `remove` that removes an element from the local object,
-- `contains` that queries the existence of a given element in the local object, and
-- `merge` that merges an ORSet received at a downstream replica with the local object.
+- `add` that add an element to to the local ORSet object,
+- `remove` that removes an element from the local ORSet object,
+- `contains` that queries the existence of a given element in the local ORSet object, and
+- `merge` that merges an ORSet received at a downstream replica with the local ORSet object.
 
 ### Map
 Map implements a convergent key value store. A map exposes the following operations,
