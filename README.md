@@ -12,7 +12,7 @@ The repository contains three directories:
 
 The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
 provides the development guide of using implemented CRDTs. For source code samples, look
-at the `test` folder.
+at the [test](https://github.com/miladghaznavi/crdts/tree/master/test) folder.
 
 ## Setup and Test
 The implementation is tested using [Google Test](https://github.com/google/googletest).
