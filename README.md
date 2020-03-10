@@ -6,9 +6,9 @@ For simplicity, we implement CRDTs that support `string` as a basic type.
 The implementation can be easily extended to support generic object types using C++ templates.
 
 The repository contains three directories:
-- `core` including data types that can be used in implementing all CRDTs,
+- `core` including basic data types that are used in implementing CRDTs,
 - `statebased` containing the implementation of state based CRDTs, and
-- `test` including test suites of implementations in both `core` and `statebased`.
+- `test` including test suites for both basic data types and state based CRDTs.
 
 The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
 provides the details of using CRDT datatypes.
