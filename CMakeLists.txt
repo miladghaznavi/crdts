@@ -11,11 +11,8 @@ set(TEST_SOURCE_FILES
         core/timestamp.hh
         core/timestamp.cc
         statebased/lwwregister.hh
-        statebased/lwwregister.cc
         statebased/orset.hh
-        statebased/orset.cc
         statebased/map.hh
-        statebased/map.cc
         test/timestamp_unittest.cc
         test/lwwregister_uinttest.cc
         test/orset_uinttest.cc

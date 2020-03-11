@@ -6,12 +6,12 @@ namespace {
 
     TEST(Map, Constructor) {
         #define REPLICA_ID 10
-        Map map(REPLICA_ID);
+        Map<std::string, std::string> map(REPLICA_ID);
         EXPECT_EQ(REPLICA_ID, map.replica_id());
     }//TEST
 
     TEST(Map, Size) {
-        Map map(REPLICA_ID);
+        Map<std::string, std::string> map(REPLICA_ID);
         EXPECT_EQ(REPLICA_ID, map.replica_id());
         EXPECT_EQ(0, map.size());
 
@@ -24,7 +24,7 @@ namespace {
 
     TEST(Map, PutAndContains) {
         // We compare Map with a C++ unordered_map as a reference
-        Map map(REPLICA_ID);
+        Map<std::string, std::string> map(REPLICA_ID);
         std::unordered_map<std::string, std::string> ref;
 
         // Put random key value pairs to the map
@@ -43,7 +43,7 @@ namespace {
 
     TEST(Map, PutAndGet) {
         // We compare Map with a C++ unordered_map as a reference
-        Map map(REPLICA_ID);
+        Map<std::string, std::string> map(REPLICA_ID);
         std::unordered_map<std::string, std::string> ref;
 
         // Put random key value pairs to the map
@@ -62,7 +62,7 @@ namespace {
 
     TEST(Map, PutAndRemoveAndConatinsAndGet) {
         // We compare Map with a C++ unordered_map and vector as references
-        Map map(REPLICA_ID);
+        Map<std::string, std::string> map(REPLICA_ID);
         std::unordered_map<std::string, std::string> ref;
         std::vector<std::string> keys;
 
@@ -101,7 +101,7 @@ namespace {
         std::vector<std::string> keys;
 
         // Define the first map and put random key value pairs to it
-        Map map1(REPLICA_ID);
+        Map<std::string, std::string> map1(REPLICA_ID);
         for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());
@@ -115,7 +115,7 @@ namespace {
 
         // Define the second map and put random key value pairs to it
         #define REPLICA2_ID 2
-        Map map2(REPLICA2_ID);
+        Map<std::string, std::string> map2(REPLICA2_ID);
         for (int i = 0; i < MAP_TEST_CASES; ++i) {
             std::string k = std::to_string(random());
             std::string v = std::to_string(random());

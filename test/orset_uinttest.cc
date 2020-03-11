@@ -6,12 +6,12 @@ namespace {
 
     TEST(ORSet, Constructor) {
         #define REPLICA_ID 10
-        ORSet set(REPLICA_ID);
+        ORSet<std::string> set(REPLICA_ID);
         EXPECT_EQ(REPLICA_ID, set.replica_id());
     }//TEST
 
     TEST(ORSet, AddAndRemoveContainSingleReplica) {
-        ORSet set(REPLICA_ID);
+        ORSet<std::string> set(REPLICA_ID);
         // Use an C++ unordered_set as a reference for testing
         std::unordered_set<std::string> ref;
 
@@ -35,7 +35,7 @@ namespace {
     }//TEST
 
     TEST(ORSet, Elements) {
-        ORSet set(REPLICA_ID);
+        ORSet<std::string> set(REPLICA_ID);
         // Use C++ unordered_set and vector as references
         std::unordered_set<std::string> ref;
         std::vector<std::string> keys;
@@ -84,9 +84,9 @@ namespace {
         std::unordered_set<std::string> ref;
         std::vector<std::string> keys;
 
-        ORSet set1(REPLICA_ID);
+        ORSet<std::string> set1(REPLICA_ID);
         #define REPLICA2_ID 2
-        ORSet set2(REPLICA2_ID);
+        ORSet<std::string> set2(REPLICA2_ID);
 
         // Merging two empty set
         set1.merge(set2);
@@ -124,7 +124,7 @@ namespace {
         for (int i = 0; i < elems.size(); ++i) {
             // Select a set among set1 or set2
             auto first_or_second = random() % 2;
-            ORSet* p = (first_or_second == 0) ? &set1 : &set2;
+            ORSet<std::string>* p = (first_or_second == 0) ? &set1 : &set2;
 
             // Call an add or remove operation of the selected set randomly
             auto add_or_remove = random() % 2;

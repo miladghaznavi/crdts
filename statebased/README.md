@@ -29,7 +29,7 @@ The following test case shows an exmaple of using these functions.
 
 TEST(LWWRegister, AssignAndValue) {
     #define REPLICA_ID 1
-    LWWRegister reg;
+    LWWRegister<std::string> reg;
     reg.replica_id(REPLICA_ID);
 
     for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
@@ -53,8 +53,8 @@ The following test case shows exmaples of simulating merge at two replicas.
 TEST(LWWRegister, Merge) {
     #define REPLICA1_ID 1
     #define REPLICA2_ID 2
-    LWWRegister reg1;
-    LWWRegister reg2;
+    LWWRegister<std::string> reg1;
+    LWWRegister<std::string> reg2;
     reg1.replica_id(REPLICA1_ID);
     reg1.replica_id(REPLICA2_ID);
 
@@ -62,8 +62,8 @@ TEST(LWWRegister, Merge) {
     // assign a random value to the selected register, and merge
     // the other register with the selected register.
     for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
-        LWWRegister* f = &reg1;
-        LWWRegister* s = &reg2;
+        LWWRegister<std::string>* f = &reg1;
+        LWWRegister<std::string>* s = &reg2;
 
         auto swap = random() % 2;
         if (swap == 1)
@@ -98,7 +98,7 @@ The constructors takes the identifier of a replica to create an ORSet.
 ```cpp
 #define REPLICA_ID 10
 TEST(ORSet, Constructor) {
-    ORSet set(REPLICA_ID);
+    ORSet<std::string> set(REPLICA_ID);
     EXPECT_EQ(REPLICA_ID, set.replica_id());
 }//TEST
 ```
@@ -121,7 +121,7 @@ The following exmaple shows the uses of `add` and `remove` and `contains`:
 
 ```cpp
 TEST(ORSet, AddAndRemoveContainsSingleReplica) {
-    ORSet set(REPLICA_ID);
+    ORSet<std::string> set(REPLICA_ID);
     // Use an C++ unordered_set as a reference for testing
     std::unordered_set<std::string> ref;
 
@@ -157,8 +157,8 @@ The following example shows simulates merging a local ORSet (`set1`) with a remo
 #define REPLICA2_ID 2
 
 TEST(ORSet, Merge) {
-    ORSet set1(REPLICA_ID);
-    ORSet set2(REPLICA2_ID);
+    ORSet<std::string> set1(REPLICA_ID);
+    ORSet<std::string> set2(REPLICA2_ID);
     // Check add-wins policy: an add operation must win over concurrent remove operation
     for (auto i = 0; i < SET_TEST_CASES / 10 + 1; ++i) {
         auto b = std::to_string(random());
@@ -205,7 +205,7 @@ In addition to above, our implementation includes the following functions:
 ```cpp
 TEST(Map, Constructor) {
     #define REPLICA_ID 10
-    Map map(REPLICA_ID);
+    Map<std::string,std::string> map(REPLICA_ID);
     EXPECT_EQ(REPLICA_ID, map.replica_id());
 }//TEST
 ```
@@ -230,7 +230,7 @@ The following example shows the usage of `put` and `contains`.
 ```cpp
 TEST(Map, PutAndContains) {
     // We compare Map with a C++ unordered_map as a reference
-    Map map(REPLICA_ID);
+    Map<std::string,std::string> map(REPLICA_ID);
     std::unordered_map<std::string, std::string> ref;
 
     // Put random key value pairs to the map
@@ -253,7 +253,7 @@ The following example shows the usage of `put` and `get`.
 ```cpp
 TEST(Map, PutAndGet) {
     // We compare Map with a C++ unordered_map as a reference
-    Map map(REPLICA_ID);
+    Map<std::string,std::string> map(REPLICA_ID);
     std::unordered_map<std::string, std::string> ref;
 
     // Put random key value pairs to the map
@@ -276,7 +276,7 @@ The following example shows the usage of `put` and `remove`.
 ```cpp
 TEST(Map, PutAndRemoveAndConatinsAndGet) {
     // We compare Map with a C++ unordered_map and vector as references
-    Map map(REPLICA_ID);
+    Map<std::string,std::string> map(REPLICA_ID);
     std::unordered_map<std::string, std::string> ref;
     std::vector<std::string> keys;
 
@@ -322,7 +322,7 @@ keys. Then, `merge` merges registers associated with remaining keys.
     
 TEST(Map, Merge) {
     // Define the first map and put random key value pairs to it
-    Map map1(REPLICA_ID);
+    Map<std::string,std::string> map1(REPLICA_ID);
     for (int i = 0; i < MAP_TEST_CASES; ++i) {
         std::string k = std::to_string(random());
         std::string v = std::to_string(random());
@@ -330,7 +330,7 @@ TEST(Map, Merge) {
     }//for
 
     // Define the second map and put random key value pairs to it
-    Map map2(REPLICA2_ID);
+    Map<std::string,std::string> map2(REPLICA2_ID);
     for (int i = 0; i < MAP_TEST_CASES; ++i) {
         std::string k = std::to_string(random());
         std::string v = std::to_string(random());

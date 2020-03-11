@@ -6,7 +6,7 @@ namespace {
 
     TEST(LWWRegister, AssignAndValue) {
         #define REPLICA_ID 1
-        LWWRegister reg;
+        LWWRegister<std::string> reg;
         reg.replica_id(REPLICA_ID);
 
         for (auto i = 0; i < random() % REGISTER_TEST_CASES + 1; ++i) {
@@ -19,8 +19,8 @@ namespace {
     TEST(LWWRegister, Merge) {
         #define REPLICA1_ID 1
         #define REPLICA2_ID 2
-        LWWRegister reg1;
-        LWWRegister reg2;
+        LWWRegister<std::string> reg1;
+        LWWRegister<std::string> reg2;
         reg1.replica_id(REPLICA1_ID);
         reg1.replica_id(REPLICA2_ID);
 
@@ -28,8 +28,8 @@ namespace {
         // assign a random value to the selected register, and merge
         // the other register with the selected register.
         for (auto i = 0; i < REGISTER_TEST_CASES; ++i) {
-            LWWRegister* f = &reg1;
-            LWWRegister* s = &reg2;
+            LWWRegister<std::string>* f = &reg1;
+            LWWRegister<std::string>* s = &reg2;
 
             auto swap = random() % 2;
             if (swap == 1)

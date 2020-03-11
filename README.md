@@ -2,8 +2,6 @@
 
 This repository implements and tests several conflict free replicated data types (CRDTs).
 Specifically, it focuses on state-based CRDTs.
-For simplicity, we implement CRDTs that support `string` as a basic type.
-The implementation can be easily extended to support generic object types using C++ templates.
 
 The repository contains three directories:
 - `core` including basic data types that are used in implementing CRDTs,
