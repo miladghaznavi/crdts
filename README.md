@@ -1,7 +1,6 @@
 # Conflict Free Replicated Data Types
 
-This repository implements and tests several conflict free replicated data types (CRDTs).
-Specifically, it focuses on state-based CRDTs.
+This repository implements and tests several state-based conflict free replicated data types (CRDTs).
 
 The repository contains three directories:
 - `core` including basic data types that are used in implementing CRDTs,
