@@ -8,8 +8,8 @@ The repository contains three directories:
 - `test` including test suites for both basic data types and state based CRDTs.
 
 The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
-provides the development guide of using implemented CRDTs. For source code samples, look
-at the [test](https://github.com/miladghaznavi/crdts/tree/master/test) folder.
+also provides the development guide of using implemented CRDTs. For source code examples
+of using CRDTs look at the [test](https://github.com/miladghaznavi/crdts/tree/master/test) folder.
 
 ## Setup and Test
 We use [Google Test](https://github.com/google/googletest) for testing.
