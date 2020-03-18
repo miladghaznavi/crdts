@@ -35,7 +35,7 @@ public:
     /// Gets the value of a given key
     /// \param key the given key
     /// \return the value
-    std::string get(const KeyType& key) {
+    ValueType get(const KeyType& key) {
         if (!this->contains(key)) {
             throw std::exception();
         }//if
@@ -104,7 +104,7 @@ public:
     /// Gets the key value pairs stored in the map
     /// \return all key value pairs
     std::unordered_map<KeyType, ValueType> key_value_pairs() {
-        std::unordered_map<std::string, std::string> res;
+        std::unordered_map<KeyType, ValueType> res;
         for (const auto& kv: _registers)
             res[kv.first] = kv.second.value();
 

@@ -1,7 +1,6 @@
 #ifndef CRDTS_LWWREGISTER_HH
 #define CRDTS_LWWREGISTER_HH
 
-#include <string>
 #include "../core/timestamp.hh"
 
 /// A LWWRegister is a variant of a register, i.e., a memory cell that stores a value.
@@ -12,7 +11,7 @@ template<typename ValueType>
 class LWWRegister {
 private:
     Timestamp _timestamp;
-    std::string _value;
+    ValueType _value;
 
 public:
     /// Sets the replica id of the register.

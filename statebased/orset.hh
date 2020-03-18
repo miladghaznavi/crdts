@@ -3,7 +3,6 @@
 
 #include <unordered_map>
 #include <unordered_set>
-#include <string>
 #include "../core/timestamp.hh"
 
 /// ORSet implements an "observed remove set" based on "optimized observed removed set" [1].
@@ -174,7 +173,7 @@ public:
     /// Gets elements stored in the local replica
     /// \return the set of elements
     std::unordered_set<ValueType> elements() const {
-        std::unordered_set<std::string> result;
+        std::unordered_set<ValueType> result;
 
         for (const auto& elem: _elements)
             result.insert(elem.first);
