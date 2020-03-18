@@ -1,7 +1,6 @@
 # Conflict Free Replicated Data Types
 
-This repository implements and tests several conflict free replicated data types (CRDTs).
-Specifically, it focuses on state-based CRDTs.
+This repository implements and tests several state-based conflict free replicated data types (CRDTs).
 
 The repository contains three directories:
 - `core` including basic data types that are used in implementing CRDTs,
@@ -9,8 +8,8 @@ The repository contains three directories:
 - `test` including test suites for both basic data types and state based CRDTs.
 
 The [statebased](https://github.com/miladghaznavi/crdts/tree/master/statebased) folder
-provides the development guide of using implemented CRDTs. For source code samples, look
-at the [test](https://github.com/miladghaznavi/crdts/tree/master/test) folder.
+also provides the development guide of using implemented CRDTs. For source code examples
+of using CRDTs look at the [test](https://github.com/miladghaznavi/crdts/tree/master/test) folder.
 
 ## Setup and Test
 We use [Google Test](https://github.com/google/googletest) for testing.
@@ -22,7 +21,7 @@ sudo ./setup.sh
 
 Run `test.sh` from the root folder of this repository to test the entire implementation.
 This script compiles the repository, places the compiled files in the folder `install`, and 
-creates a binary file `crdts_test` that runs test cases. Run the following to test the repository:
+creates and executes a binary file `crdts_test` that runs test cases. Run the following to test the repository:
 
 ```bash
 ./test.sh
