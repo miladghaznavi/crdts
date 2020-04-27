@@ -35,6 +35,9 @@ public:
         this->_timestamp.update();
         this->_value = value;
     }
+    void assign(const ValueType&& value) {
+        this->assign(value);
+    }
 
     /// Merges a given register with the local register
     /// \param reg the given register
