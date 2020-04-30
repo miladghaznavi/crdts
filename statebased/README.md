@@ -1,5 +1,5 @@
 # State-based CRDTs
-We implement a __last writer wins register__, __optimized observed removed set__, and a 
+We implement a __last writer wins register__, __optimized observed removed set__, and an 
 __add wins observed removed map__.
 
 ## Last Writer Wins Register (LWWRegister)
